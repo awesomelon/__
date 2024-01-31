@@ -20,7 +20,7 @@ import {
 import { JwtAuthGuard, LocalAuthGuard } from './guard';
 
 // DTO
-import { RequestLoginDTO, ResponseLoginDTO } from './dto';
+import { RequestLoginDTO, ResponseLoginDTO, ResponseProfile } from './dto';
 
 // auth
 import { AuthService } from './auth.service';
@@ -51,7 +51,8 @@ export class AuthController {
   @ApiBearerAuth()
   @Roles([RolesType.ADMIN, RolesType.USER])
   @ApiOperation({ summary: '잔여 하트 조회' })
-  async get(@Request() req) {
+  @ApiCreatedResponse({ type: ResponseProfile })
+  async getProfile(@Request() req) {
     return this.service.getProfile(req);
   }
 }
