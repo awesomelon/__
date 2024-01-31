@@ -1,6 +1,15 @@
 // auth
-import { Body, Controller, Post, UseGuards, Version } from '@nestjs/common';
 import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+  Version,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiOperation,
@@ -8,13 +17,16 @@ import {
 } from '@nestjs/swagger';
 
 // Guard
-import { LocalAuthGuard } from './guard';
+import { JwtAuthGuard, LocalAuthGuard } from './guard';
 
 // DTO
 import { RequestLoginDTO, ResponseLoginDTO } from './dto';
 
 // auth
 import { AuthService } from './auth.service';
+import { RolesGuard } from 'src/common/guard';
+import { Roles } from 'src/common/decorator';
+import { RolesType } from 'src/common/enum';
 
 @ApiTags('Auth')
 @Controller('api/auth')
@@ -29,5 +41,15 @@ export class AuthController {
   @ApiCreatedResponse({ type: ResponseLoginDTO })
   async login(@Body() body: RequestLoginDTO) {
     return this.service.login(body);
+  }
+
+  @Version('1')
+  @Get('/profile')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  @Roles([RolesType.ADMIN, RolesType.USER])
+  @ApiOperation({ summary: '잔여 하트 조회' })
+  async get(@Request() req) {
+    return this.service.getProfile(req);
   }
 }

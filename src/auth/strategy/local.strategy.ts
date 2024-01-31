@@ -24,7 +24,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     const user = await this.authService.validateUser(username, password);
 
     if (!user) {
-      return errorException(401);
+      return errorException('TF003');
     }
 
     return user;

@@ -12,11 +12,15 @@ import { JwtStrategy, LocalStrategy } from './strategy';
 
 // User
 import { UserModule } from 'src/user/user.module';
+import { HeartModule } from 'src/heart/heart.module';
+import { BonusHeartModule } from 'src/bonusHeart/bonusHeart.module';
 
 @Module({
   imports: [
     PassportModule,
     UserModule,
+    HeartModule,
+    BonusHeartModule,
     JwtModule.register({
       secret: process.env.JWT_ACCESS_TOKEN_SECRET,
       signOptions: { expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME },
