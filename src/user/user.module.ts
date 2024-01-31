@@ -2,24 +2,28 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 
-import { HelloBotUser } from './entity';
-import { HeartModule } from 'src/heart/heart.module';
-
 // User
+import { HelloBotUser } from './entity';
 import { UserService } from './user.service';
+
+// common
 import { CommonService } from 'src/common/service/common.service';
-import { Repository } from 'typeorm';
+
+// lib
+import { DataSource, Repository } from 'typeorm';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([HelloBotUser]), HeartModule],
+  imports: [TypeOrmModule.forFeature([HelloBotUser])],
   controllers: [],
   providers: [
     UserService,
     {
       provide: CommonService,
-      useFactory: (repository: Repository<HelloBotUser>) =>
-        new CommonService<HelloBotUser>(repository),
-      inject: [getRepositoryToken(HelloBotUser)],
+      useFactory: (
+        repository: Repository<HelloBotUser>,
+        dataSource: DataSource,
+      ) => new CommonService<HelloBotUser>(repository, dataSource),
+      inject: [getRepositoryToken(HelloBotUser), DataSource],
     },
   ],
   exports: [UserService],

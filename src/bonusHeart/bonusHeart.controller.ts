@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 
 import { BonusHeartService } from './bonusHeart.service';
-import { RequestCreateBonusHeartDTO, ResponseHeartDTO } from './dto';
+import { RequestChargingBonusHeartDTO, ResponseHeartDTO } from './dto';
 
 // auth
 import { JwtAuthGuard } from 'src/auth/guard';
@@ -26,9 +26,8 @@ import { JwtAuthGuard } from 'src/auth/guard';
 import { EntityManager, Roles } from 'src/common/decorator';
 import { RolesGuard } from 'src/common/guard';
 import { RolesType } from 'src/common/enum';
-import { TransactionInterceptor } from 'src/common/interceptor';
 
-@ApiTags('Bonus Heart')
+@ApiTags('Heart')
 @Controller('api/bonusheart')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class BonusHeartController {
@@ -36,17 +35,12 @@ export class BonusHeartController {
 
   @Version('1')
   @Post('/charging')
-  @UseInterceptors(TransactionInterceptor)
   @ApiBearerAuth()
   @Roles([RolesType.ADMIN])
   @ApiOperation({ summary: '보너스 하트 충전' })
-  @ApiBody({ type: RequestCreateBonusHeartDTO })
+  @ApiBody({ type: RequestChargingBonusHeartDTO })
   @ApiCreatedResponse({ type: ResponseHeartDTO })
-  async charging(
-    @Body() body: RequestCreateBonusHeartDTO,
-    @Request() req,
-    @EntityManager() manager,
-  ) {
-    return this.service.charging(body, req.user.id, manager);
+  async charging(@Body() body: RequestChargingBonusHeartDTO, @Request() req) {
+    return this.service.charging(body, req.user.id);
   }
 }

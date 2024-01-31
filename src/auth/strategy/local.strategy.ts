@@ -11,8 +11,8 @@ import { HelloBotUser } from 'src/user/entity';
 // lib
 import { Strategy } from 'passport-local';
 
-// utils
-import { errorException } from 'src/utils';
+// common
+import { errorException } from 'src/common/middleware';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {

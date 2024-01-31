@@ -1,18 +1,32 @@
 import { Injectable } from '@nestjs/common';
+
 import {
+  DataSource,
   FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
 import { PickKeysByType } from 'typeorm/common/PickKeysByType';
+import { errorException } from '../middleware';
 
 @Injectable()
 export class CommonService<T> {
-  constructor(private readonly genericRepository: Repository<T>) {}
+  constructor(
+    private readonly genericRepository: Repository<T>,
+    private readonly dataSource: DataSource,
+  ) {}
+
+  async find(filter: FindManyOptions<T>): Promise<T[]> {
+    return this.genericRepository.find(filter);
+  }
 
   async findOne(filter: FindOneOptions<T>): Promise<T | null> {
     return this.genericRepository.findOne(filter);
+  }
+
+  async count(filter: FindOptionsWhere<T>): Promise<number> {
+    return this.genericRepository.count(filter);
   }
 
   async sum(
@@ -31,5 +45,23 @@ export class CommonService<T> {
     }
 
     return false;
+  }
+
+  async insert(data: T) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+
+    await queryRunner.startTransaction();
+
+    try {
+      const result = await queryRunner.manager.save<T>(data);
+      await queryRunner.commitTransaction();
+      return result;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

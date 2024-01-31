@@ -11,7 +11,7 @@ import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 
 // common
 import { DBConfigModule } from './database/config.module';
-import { AllExceptionFilter } from './utils/error.handler';
+import { AllExceptionFilter } from './common/middleware/error';
 import { HealthController } from './health/health.controller';
 import { LoggerMiddleware } from './logger/logger.middleware';
 
@@ -28,6 +28,8 @@ import { HeartModule } from './heart/heart.module';
 import { BonusHeartModule } from './bonusHeart/bonusHeart.module';
 import { HeartController } from './heart/heart.controller';
 import { BonusHeartController } from './bonusHeart/bonusHeart.controller';
+import { HistoryController } from './history/history.controller';
+import { HistoryModule } from './history/history.module';
 
 @Module({
   imports: [
@@ -38,6 +40,7 @@ import { BonusHeartController } from './bonusHeart/bonusHeart.controller';
     UserModule,
     HeartModule,
     BonusHeartModule,
+    HistoryModule,
   ],
   controllers: [HealthController],
   providers: [
@@ -55,6 +58,11 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LoggerMiddleware)
-      .forRoutes(HealthController, HeartController, BonusHeartController);
+      .forRoutes(
+        HealthController,
+        HeartController,
+        BonusHeartController,
+        HistoryController,
+      );
   }
 }

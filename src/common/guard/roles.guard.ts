@@ -1,6 +1,8 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+
 import { Roles } from '../decorator/roles.decorator';
+import { errorException } from '../middleware';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -12,6 +14,11 @@ export class RolesGuard implements CanActivate {
       return true;
     }
     const request = context.switchToHttp().getRequest();
-    return roles.includes(request.user.role);
+
+    if (roles.includes(request.user.role)) {
+      return roles.includes(request.user.role);
+    }
+
+    return errorException('TF400');
   }
 }

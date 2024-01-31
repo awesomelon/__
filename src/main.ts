@@ -12,7 +12,7 @@ import fastifyCsrf from '@fastify/csrf-protection';
 
 import { AppModule } from './app.module';
 import { APIDocumentation } from './document';
-import { AllExceptionFilter } from './utils';
+import { AllExceptionFilter } from './common/middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(

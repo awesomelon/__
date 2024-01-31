@@ -2,9 +2,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BonusHeart } from 'src/bonusHeart/entity';
 
+// Entity
+import { BonusHeart } from 'src/bonusHeart/entity';
 import { Heart } from 'src/heart/entity';
+import { History } from 'src/history/entity';
 import { HelloBotUser } from 'src/user/entity';
 
 @Module({
@@ -19,8 +21,7 @@ import { HelloBotUser } from 'src/user/entity';
           username: config.get('DB_USERNAME'),
           password: config.get('DB_PASSWORD'),
           database: config.get('DB_NAME'),
-          entities: [HelloBotUser, Heart, BonusHeart],
-          useUTC: false,
+          entities: [HelloBotUser, Heart, BonusHeart, History],
           synchronize: true,
           autoLoadEntities: true,
         };

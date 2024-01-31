@@ -1,30 +1,35 @@
 import { Injectable } from '@nestjs/common';
 
 import { BonusHeart } from './entity';
-import { RequestCreateBonusHeartDTO } from './dto';
+import { RequestChargingBonusHeartDTO } from './dto';
 
+// User
 import { UserService } from 'src/user/user.service';
+
+// Common
 import { RolesType } from 'src/common/enum';
 import { CommonService } from 'src/common/service/common.service';
-import { errorException } from 'src/utils';
+import { errorException } from 'src/common/middleware';
 
 // lib
-import { FindOptionsWhere } from 'typeorm';
+import { Entity, FindOptionsWhere } from 'typeorm';
 import * as dayjs from 'dayjs';
+import { HistoryService } from 'src/history/history.service';
 
 @Injectable()
 export class BonusHeartService {
   constructor(
     private readonly userService: UserService,
     private readonly commonService: CommonService<BonusHeart>,
+    private readonly historyService: HistoryService,
   ) {}
 
   async sum(filter: FindOptionsWhere<BonusHeart>) {
     return this.commonService.sum(filter, 'amount');
   }
 
-  async charging(dto: RequestCreateBonusHeartDTO, adminId: number, manager) {
-    const data = { ...dto, adminId };
+  async charging(dto: RequestChargingBonusHeartDTO, adminId: number) {
+    const data = { ...dto, adminId, isUse: false };
 
     const chargingAmount = data.amount;
 
@@ -59,6 +64,14 @@ export class BonusHeartService {
       return errorException('TF003');
     }
 
-    return manager.getRepository(BonusHeart).save(data);
+    const bonus = new BonusHeart();
+    Object.assign(bonus, data);
+
+    await this.historyService.insert({
+      ...data,
+      type: 'bonusHeart',
+    });
+
+    return this.commonService.insert(bonus);
   }
 }

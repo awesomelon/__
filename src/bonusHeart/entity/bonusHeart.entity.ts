@@ -12,6 +12,9 @@ export class BonusHeart extends CommonEntity {
   @Column({ type: 'int', nullable: false })
   adminId: number;
 
+  @Column({ type: 'boolean', nullable: false })
+  isUse: boolean;
+
   @Column({ type: 'timestamptz', nullable: false })
   expiredStartAt: Date;
 

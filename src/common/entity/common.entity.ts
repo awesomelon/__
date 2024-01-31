@@ -11,21 +11,21 @@ import {
 @Entity()
 export class CommonEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @IsDate()
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
+  @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt?: Date;
 
   @IsDate()
-  @Column({
-    type: 'timestamp',
+  @UpdateDateColumn({
+    type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
     nullable: true,
   })
-  updatedAt: Date;
+  updatedAt?: Date;
 
   @IsBoolean()
   @Column({ default: false })
-  isDeleted: boolean;
+  isDeleted?: boolean;
 }

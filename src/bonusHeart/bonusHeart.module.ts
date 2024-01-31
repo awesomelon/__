@@ -8,18 +8,21 @@ import { BonusHeartController } from './bonusHeart.controller';
 import { BonusHeart } from './entity';
 import { UserModule } from 'src/user/user.module';
 import { CommonService } from 'src/common/service/common.service';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
+import { HistoryModule } from 'src/history/history.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([BonusHeart]), UserModule],
+  imports: [TypeOrmModule.forFeature([BonusHeart]), UserModule, HistoryModule],
   controllers: [BonusHeartController],
   providers: [
     BonusHeartService,
     {
       provide: CommonService,
-      useFactory: (repository: Repository<BonusHeart>) =>
-        new CommonService<BonusHeart>(repository),
-      inject: [getRepositoryToken(BonusHeart)],
+      useFactory: (
+        repository: Repository<BonusHeart>,
+        dataSource: DataSource,
+      ) => new CommonService<BonusHeart>(repository, dataSource),
+      inject: [getRepositoryToken(BonusHeart), DataSource],
     },
   ],
   exports: [BonusHeartService],

@@ -5,7 +5,6 @@ import {
   Post,
   Request,
   UseGuards,
-  UseInterceptors,
   Version,
 } from '@nestjs/common';
 import {
@@ -16,17 +15,17 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+// Heart
 import { HeartService } from './heart.service';
-import { RequestCreateHeartDTO, ResponseHeartDTO } from './dto';
+import { RequestChargingHeartDTO, ResponseHeartDTO } from './dto';
 
 // auth
 import { JwtAuthGuard } from 'src/auth/guard';
 
 // common
-import { EntityManager, Roles } from 'src/common/decorator';
+import { Roles } from 'src/common/decorator';
 import { RolesGuard } from 'src/common/guard';
 import { RolesType } from 'src/common/enum';
-import { TransactionInterceptor } from 'src/common/interceptor';
 
 @ApiTags('Heart')
 @Controller('api/heart')
@@ -36,17 +35,12 @@ export class HeartController {
 
   @Version('1')
   @Post('/charging')
-  @UseInterceptors(TransactionInterceptor)
   @ApiBearerAuth()
   @Roles([RolesType.ADMIN, RolesType.USER])
   @ApiOperation({ summary: '일반 하트 충전' })
-  @ApiBody({ type: RequestCreateHeartDTO })
+  @ApiBody({ type: RequestChargingHeartDTO })
   @ApiCreatedResponse({ type: ResponseHeartDTO })
-  async charging(
-    @Body() body: RequestCreateHeartDTO,
-    @Request() req,
-    @EntityManager() manager,
-  ) {
-    return this.service.insert(body, req.user.id, manager);
+  async charging(@Body() body: RequestChargingHeartDTO, @Request() req) {
+    return this.service.charging(body, req.user.id);
   }
 }
