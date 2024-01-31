@@ -1,10 +1,5 @@
 // core
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TerminusModule } from '@nestjs/terminus';
 import { APP_FILTER, APP_PIPE } from '@nestjs/core';
@@ -12,8 +7,8 @@ import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 // common
 import { DBConfigModule } from './database/config.module';
 import { AllExceptionFilter } from './common/middleware/error';
+
 import { HealthController } from './health/health.controller';
-import { LoggerMiddleware } from './logger/logger.middleware';
 
 // Auth
 import { AuthModule } from './auth/auth.module';
@@ -26,9 +21,8 @@ import { HeartModule } from './heart/heart.module';
 
 // BonusHeart
 import { BonusHeartModule } from './bonusHeart/bonusHeart.module';
-import { HeartController } from './heart/heart.controller';
-import { BonusHeartController } from './bonusHeart/bonusHeart.controller';
-import { HistoryController } from './history/history.controller';
+
+// History
 import { HistoryModule } from './history/history.module';
 
 @Module({
@@ -54,15 +48,4 @@ import { HistoryModule } from './history/history.module';
     },
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware)
-      .forRoutes(
-        HealthController,
-        HeartController,
-        BonusHeartController,
-        HistoryController,
-      );
-  }
-}
+export class AppModule {}

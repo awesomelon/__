@@ -16,7 +16,17 @@ export class HistoryService {
   constructor(private readonly commonService: CommonService<History>) {}
 
   async list(filter: RequestHistoryDTO, userId: number) {
-    const items = await this.find({
+    const items = await this.getItems(filter, userId);
+    const totalCount = await this.getTotalCount(userId);
+
+    return {
+      totalCount,
+      items,
+    };
+  }
+
+  async getItems(filter: RequestHistoryDTO, userId: number) {
+    return this.find({
       where: {
         userId,
         isUse: false,
@@ -25,16 +35,13 @@ export class HistoryService {
       take: filter.limit,
       order: { createdAt: 'DESC' },
     });
+  }
 
-    const totalCount = await this.count({
+  async getTotalCount(userId: number) {
+    return this.count({
       userId,
       isUse: false,
     });
-
-    return {
-      totalCount,
-      items,
-    };
   }
 
   async find(filter: FindManyOptions<History>) {

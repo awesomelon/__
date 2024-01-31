@@ -31,12 +31,7 @@ export class AuthService {
   ) {}
 
   async getProfile(req) {
-    const email = req.user.email;
-    const user = await this.userService.findOne({
-      where: { email, isDeleted: false },
-      select: ['email', 'role', 'id'],
-    });
-
+    const user = await this.getUserInfo(req);
     const heart = await this.getAmountHeart(user.id);
 
     return {
@@ -45,9 +40,19 @@ export class AuthService {
     };
   }
 
+  async getUserInfo(req) {
+    const email = req.user.email;
+    const user = await this.userService.findOne({
+      where: { email, isDeleted: false },
+      select: ['email', 'role', 'id'],
+    });
+
+    return user;
+  }
+
   async getAmountHeart(userId: number) {
     const heart = await this.heartService.getHeartAmount(userId);
-    const bonus = await this.bonusService.getHeartAmount(userId);
+    const bonus = await this.bonusService.getTotalBonusHeartAmount(userId);
     return heart + bonus;
   }
 

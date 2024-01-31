@@ -35,65 +35,87 @@ export class BonusHeartService {
   ) {}
 
   async charging(dto: RequestChargingBonusHeartDTO, adminId: number) {
-    const data = { ...dto, adminId, isUse: false };
+    this.validateChargingParameters(dto);
+    await this.checkUserExistence(dto.userId);
 
-    const chargingAmount = data.amount;
+    const createdHeart = await this.createBonusHeart(dto, adminId);
+    await this.createBonusHeartItem(createdHeart, dto.amount);
+    await this.logHistory({
+      ...dto,
+      adminId,
+      type: 'bonusHeart',
+    });
+
+    return this.commonService.findOne({ where: { id: createdHeart.id } });
+  }
+
+  private validateChargingParameters(dto: RequestChargingBonusHeartDTO) {
+    const chargingAmount = dto.amount;
 
     const current = dayjs();
-    const expiredStartAt = dayjs(data.expiredStartAt);
-    const expiredEndAt = dayjs(data.expiredEndAt);
+    const expiredStartAt = dayjs(dto.expiredStartAt);
+    const expiredEndAt = dayjs(dto.expiredEndAt);
 
     const startDiff = current.diff(expiredStartAt);
     const endDiff = current.diff(expiredEndAt);
 
     if (startDiff > 0) {
-      return errorException('TF442');
+      errorException('TF442');
     }
 
     if (endDiff > 0) {
-      return errorException('TF443');
+      errorException('TF443');
     }
 
     if (chargingAmount <= 0) {
-      return errorException('TF441');
+      errorException('TF441');
     }
 
     if (!Number.isInteger(chargingAmount)) {
-      return errorException('TF440');
+      errorException('TF440');
     }
+  }
 
+  private async checkUserExistence(userId: number) {
     const user = await this.userService.exists({
-      where: { id: dto.userId, role: RolesType.USER },
+      where: { id: userId, role: RolesType.USER },
     });
 
     if (!user) {
-      return errorException('TF003');
+      errorException('TF003');
     }
+  }
 
-    const createHeart = await this.insert({
-      ...data,
+  private async createBonusHeart(
+    dto: RequestChargingBonusHeartDTO,
+    adminId: number,
+  ) {
+    return this.insert({
+      ...dto,
+      adminId,
       totalAmount: dto.amount,
     });
+  }
 
-    const bonusHeartId = createHeart.id;
-
-    await this.bonusHeartItemService.insert({
+  private async createBonusHeartItem(bonusHeart: BonusHeart, amount: number) {
+    const bonusHeartId = bonusHeart.id;
+    return this.bonusHeartItemService.insert({
       bonusHeartId,
-      amount: dto.amount,
+      amount,
     });
-
-    await this.historyService.insert({
-      ...data,
-      amount: dto.amount,
-      type: 'bonusHeart',
-    });
-
-    return this.commonService.findOne({ where: { id: bonusHeartId } });
   }
 
   async use(dto: RequestUseBonusHeartDTO) {
     const userId = dto.userId;
-    const bonusHearts = await this.commonService.find({
+    const bonusHearts = await this.getValidBonusHearts(userId);
+    await this.applyBonusHeartUsage(bonusHearts, dto.amount);
+    return this.commonService.findOne({
+      where: { userId, isDeleted: false },
+    });
+  }
+
+  private getValidBonusHearts(userId: number) {
+    return this.commonService.find({
       where: {
         userId,
         isDeleted: false,
@@ -102,8 +124,12 @@ export class BonusHeartService {
       },
       order: { createdAt: 'ASC' },
     });
+  }
 
-    let amount = dto.amount;
+  private async applyBonusHeartUsage(
+    bonusHearts: BonusHeart[],
+    amount: number,
+  ) {
     let cursor = 0;
     while (amount > 0) {
       const bonusHeart = bonusHearts[cursor];
@@ -127,13 +153,9 @@ export class BonusHeartService {
       amount = amount - useAmount;
       cursor++;
     }
-
-    return this.commonService.findOne({
-      where: { userId, isDeleted: false },
-    });
   }
 
-  async getHeartAmount(userId: number) {
+  async getTotalBonusHeartAmount(userId: number) {
     const totalAmount = await this.commonService.sum(
       {
         userId,
@@ -150,5 +172,9 @@ export class BonusHeartService {
     const entity = new BonusHeart();
     Object.assign(entity, dto);
     return this.commonService.insert(entity);
+  }
+
+  private async logHistory(data: any): Promise<void> {
+    await this.historyService.insert(data);
   }
 }

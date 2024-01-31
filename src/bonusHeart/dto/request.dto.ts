@@ -4,6 +4,9 @@ export class BonusHeartDTO {
   @ApiProperty({ required: true, description: 'Heart Bonus Amount' })
   totalAmount: number;
 
+  @ApiProperty({ required: true, description: 'Admin ID' })
+  adminId: number;
+
   @ApiProperty({ required: true, description: 'User ID' })
   userId: number;
 
