@@ -17,7 +17,11 @@ import {
 
 // Heart
 import { HeartService } from './heart.service';
-import { RequestChargingHeartDTO, ResponseHeartDTO } from './dto';
+import {
+  RequestChargingHeartDTO,
+  RequestUseHeartDTO,
+  ResponseHeartDTO,
+} from './dto';
 
 // auth
 import { JwtAuthGuard } from 'src/auth/guard';
@@ -34,7 +38,7 @@ export class HeartController {
   constructor(private readonly service: HeartService) {}
 
   @Version('1')
-  @Post('/charging')
+  @Post('/normal/charging')
   @ApiBearerAuth()
   @Roles([RolesType.ADMIN, RolesType.USER])
   @ApiOperation({ summary: '일반 하트 충전' })
@@ -42,5 +46,16 @@ export class HeartController {
   @ApiCreatedResponse({ type: ResponseHeartDTO })
   async charging(@Body() body: RequestChargingHeartDTO, @Request() req) {
     return this.service.charging(body, req.user.id);
+  }
+
+  @Version('1')
+  @Post('/use')
+  @ApiBearerAuth()
+  @Roles([RolesType.ADMIN, RolesType.USER])
+  @ApiOperation({ summary: '하트 사용' })
+  @ApiBody({ type: RequestUseHeartDTO })
+  @ApiCreatedResponse({ type: ResponseHeartDTO })
+  async use(@Body() body: RequestUseHeartDTO, @Request() req) {
+    return this.service.use(body, req.user.id);
   }
 }

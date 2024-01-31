@@ -11,12 +11,13 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiCreatedResponse,
   ApiOperation,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 
-import { RequestHistoryDTO } from './dto';
+import { RequestHistoryDTO, ResponseHistory } from './dto';
 import { HistoryService } from './history.service';
 
 // auth
@@ -39,6 +40,7 @@ export class HistoryController {
   @Roles([RolesType.ADMIN, RolesType.USER])
   @ApiOperation({ summary: '하트 충전 내역 조회' })
   @ApiQuery({ type: RequestHistoryDTO })
+  @ApiCreatedResponse({ type: ResponseHistory })
   async list(@Query('skip') skip, @Query('limit') limit, @Request() req) {
     return this.service.list({ skip, limit }, req.user.id);
   }

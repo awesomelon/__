@@ -7,6 +7,9 @@ import { HeartService } from './heart.service';
 import { HeartController } from './heart.controller';
 import { Heart } from './entity';
 
+// BonusHeart
+import { BonusHeartModule } from 'src/bonusHeart/bonusHeart.module';
+
 // History
 import { HistoryModule } from 'src/history/history.module';
 
@@ -17,7 +20,7 @@ import { CommonService } from 'src/common/service/common.service';
 import { DataSource, Repository } from 'typeorm';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Heart]), HistoryModule],
+  imports: [TypeOrmModule.forFeature([Heart]), HistoryModule, BonusHeartModule],
   controllers: [HeartController],
   providers: [
     HeartService,

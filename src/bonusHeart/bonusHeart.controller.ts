@@ -5,7 +5,6 @@ import {
   Post,
   Request,
   UseGuards,
-  UseInterceptors,
   Version,
 } from '@nestjs/common';
 import {
@@ -23,18 +22,18 @@ import { RequestChargingBonusHeartDTO, ResponseHeartDTO } from './dto';
 import { JwtAuthGuard } from 'src/auth/guard';
 
 // common
-import { EntityManager, Roles } from 'src/common/decorator';
+import { Roles } from 'src/common/decorator';
 import { RolesGuard } from 'src/common/guard';
 import { RolesType } from 'src/common/enum';
 
 @ApiTags('Heart')
-@Controller('api/bonusheart')
+@Controller('api/heart')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class BonusHeartController {
   constructor(private readonly service: BonusHeartService) {}
 
   @Version('1')
-  @Post('/charging')
+  @Post('/bonus/charging')
   @ApiBearerAuth()
   @Roles([RolesType.ADMIN])
   @ApiOperation({ summary: '보너스 하트 충전' })

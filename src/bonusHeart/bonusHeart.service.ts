@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
 import { BonusHeart } from './entity';
-import { RequestChargingBonusHeartDTO } from './dto';
+import { RequestChargingBonusHeartDTO, RequestUseBonusHeartDTO } from './dto';
 
 // User
 import { UserService } from 'src/user/user.service';
+
+// History
+import { HistoryService } from 'src/history/history.service';
 
 // Common
 import { RolesType } from 'src/common/enum';
@@ -12,9 +15,8 @@ import { CommonService } from 'src/common/service/common.service';
 import { errorException } from 'src/common/middleware';
 
 // lib
-import { Entity, FindOptionsWhere } from 'typeorm';
+import { FindOptionsWhere } from 'typeorm';
 import * as dayjs from 'dayjs';
-import { HistoryService } from 'src/history/history.service';
 
 @Injectable()
 export class BonusHeartService {
@@ -73,5 +75,17 @@ export class BonusHeartService {
     });
 
     return this.commonService.insert(bonus);
+  }
+
+  async use(dto: RequestUseBonusHeartDTO) {
+    const data = {
+      ...dto,
+      isUse: true,
+    };
+
+    const entity = new BonusHeart();
+    Object.assign(entity, data);
+
+    return this.commonService.insert(entity);
   }
 }
