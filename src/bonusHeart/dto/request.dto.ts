@@ -2,7 +2,7 @@ import { ApiProperty, PickType } from '@nestjs/swagger';
 
 export class BonusHeartDTO {
   @ApiProperty({ required: true, description: 'Heart Bonus Amount' })
-  amount: number;
+  totalAmount: number;
 
   @ApiProperty({ required: true, description: 'User ID' })
   userId: number;
@@ -15,13 +15,25 @@ export class BonusHeartDTO {
 }
 
 export class RequestChargingBonusHeartDTO extends PickType(BonusHeartDTO, [
-  'amount',
-  'userId',
   'expiredStartAt',
   'expiredEndAt',
-]) {}
+  'userId',
+]) {
+  @ApiProperty({ required: true, description: 'Heart Amount' })
+  amount: number;
+}
 
 export class RequestUseBonusHeartDTO extends PickType(BonusHeartDTO, [
-  'amount',
   'userId',
-]) {}
+]) {
+  @ApiProperty({ required: true, description: 'Heart Amount' })
+  amount: number;
+}
+
+export class BonusHeartItemDTO {
+  @ApiProperty({ required: true, description: 'Heart Item Amount' })
+  amount: number;
+
+  @ApiProperty({ required: true, description: 'Heart Item Id' })
+  bonusHeartId: number;
+}

@@ -5,25 +5,25 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 
 export class ResponseLoginDTO {
-  @ApiProperty()
+  @ApiProperty({ description: 'ACCESS TOKEN' })
   @IsString()
   access_token: string;
 }
 
 export class ResponseProfile {
-  @ApiProperty()
+  @ApiProperty({ description: '유저 ID' })
   @IsNumber()
   id: number;
 
-  @ApiProperty()
+  @ApiProperty({ description: '유저 이메일' })
   @IsString()
   email: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: '유저 권한' })
   @IsNumber()
   role: number;
 
-  @ApiProperty()
+  @ApiProperty({ description: '유저 보유 하트' })
   @IsNumber()
   heart: number;
 }

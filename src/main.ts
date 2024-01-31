@@ -26,8 +26,10 @@ async function bootstrap() {
     type: VersioningType.URI,
   });
 
-  const document = new APIDocumentation();
-  document.setup(app);
+  if (process.env.NODE_ENV !== 'production') {
+    const document = new APIDocumentation();
+    document.setup(app);
+  }
 
   await app.register(fastifyCsrf);
   await app.register(helmet);
@@ -37,9 +39,6 @@ async function bootstrap() {
 
   await app.listen(process.env.API_PORT, '0.0.0.0').then(() => {
     console.log(`🚀 Server ready at http://localhost:${process.env.API_PORT}`);
-    console.log(
-      `📒 Documents at http://localhost:${process.env.API_PORT}/docs`,
-    );
   });
 }
 bootstrap();

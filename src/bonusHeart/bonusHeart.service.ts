@@ -1,7 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
 import { BonusHeart } from './entity';
-import { RequestChargingBonusHeartDTO, RequestUseBonusHeartDTO } from './dto';
+import {
+  BonusHeartDTO,
+  RequestChargingBonusHeartDTO,
+  RequestUseBonusHeartDTO,
+} from './dto';
+
+// Bonus
+import { BonusHeartItemService } from './bonusHeartItem.service';
 
 // User
 import { UserService } from 'src/user/user.service';
@@ -15,7 +22,7 @@ import { CommonService } from 'src/common/service/common.service';
 import { errorException } from 'src/common/middleware';
 
 // lib
-import { FindOptionsWhere } from 'typeorm';
+import { MoreThanOrEqual } from 'typeorm';
 import * as dayjs from 'dayjs';
 
 @Injectable()
@@ -24,11 +31,8 @@ export class BonusHeartService {
     private readonly userService: UserService,
     private readonly commonService: CommonService<BonusHeart>,
     private readonly historyService: HistoryService,
+    private readonly bonusHeartItemService: BonusHeartItemService,
   ) {}
-
-  async sum(filter: FindOptionsWhere<BonusHeart>) {
-    return this.commonService.sum(filter, 'amount');
-  }
 
   async charging(dto: RequestChargingBonusHeartDTO, adminId: number) {
     const data = { ...dto, adminId, isUse: false };
@@ -66,26 +70,85 @@ export class BonusHeartService {
       return errorException('TF003');
     }
 
-    const bonus = new BonusHeart();
-    Object.assign(bonus, data);
+    const createHeart = await this.insert({
+      ...data,
+      totalAmount: dto.amount,
+    });
+
+    const bonusHeartId = createHeart.id;
+
+    await this.bonusHeartItemService.insert({
+      bonusHeartId,
+      amount: dto.amount,
+    });
 
     await this.historyService.insert({
       ...data,
+      amount: dto.amount,
       type: 'bonusHeart',
     });
 
-    return this.commonService.insert(bonus);
+    return this.commonService.findOne({ where: { id: bonusHeartId } });
   }
 
   async use(dto: RequestUseBonusHeartDTO) {
-    const data = {
-      ...dto,
-      isUse: true,
-    };
+    const userId = dto.userId;
+    const bonusHearts = await this.commonService.find({
+      where: {
+        userId,
+        isDeleted: false,
+        expiredStartAt: MoreThanOrEqual(new Date()),
+        expiredEndAt: MoreThanOrEqual(new Date()),
+      },
+      order: { createdAt: 'ASC' },
+    });
 
+    let amount = dto.amount;
+    let cursor = 0;
+    while (amount > 0) {
+      const bonusHeart = bonusHearts[cursor];
+      const bonusHeartId = bonusHeart.id;
+      const bonusHeartAmount = bonusHeart.totalAmount;
+
+      const useAmount =
+        bonusHeartAmount - amount >= 0 ? amount : bonusHeartAmount;
+      await this.bonusHeartItemService.insert({
+        bonusHeartId,
+        amount: -useAmount,
+      });
+
+      const totalAmount = await this.bonusHeartItemService.sum({
+        bonusHeartId,
+        isDeleted: false,
+      });
+
+      await this.commonService.updateOne({ id: bonusHeartId }, { totalAmount });
+
+      amount = amount - useAmount;
+      cursor++;
+    }
+
+    return this.commonService.findOne({
+      where: { userId, isDeleted: false },
+    });
+  }
+
+  async getHeartAmount(userId: number) {
+    const totalAmount = await this.commonService.sum(
+      {
+        userId,
+        expiredStartAt: MoreThanOrEqual(new Date()),
+        expiredEndAt: MoreThanOrEqual(new Date()),
+      },
+      'totalAmount',
+    );
+
+    return totalAmount;
+  }
+
+  async insert(dto: BonusHeartDTO) {
     const entity = new BonusHeart();
-    Object.assign(entity, data);
-
+    Object.assign(entity, dto);
     return this.commonService.insert(entity);
   }
 }

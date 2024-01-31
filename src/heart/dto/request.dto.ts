@@ -2,7 +2,7 @@ import { ApiProperty, PickType } from '@nestjs/swagger';
 
 export class HeartDTO {
   @ApiProperty({ required: true, description: 'Heart Amount' })
-  amount: number;
+  totalAmount: number;
 
   @ApiProperty({ required: true, description: 'Heart Use' })
   isUse: boolean;
@@ -11,5 +11,19 @@ export class HeartDTO {
   userId: number;
 }
 
-export class RequestChargingHeartDTO extends PickType(HeartDTO, ['amount']) {}
-export class RequestUseHeartDTO extends PickType(HeartDTO, ['amount']) {}
+export class RequestChargingHeartDTO {
+  @ApiProperty({ required: true, description: 'Heart Amount' })
+  amount: number;
+}
+export class RequestUseHeartDTO {
+  @ApiProperty({ required: true, description: 'Heart Amount' })
+  amount: number;
+}
+
+export class HeartItemDTO {
+  @ApiProperty({ required: true, description: 'Heart Item Amount' })
+  amount: number;
+
+  @ApiProperty({ required: true, description: 'Heart Item Id' })
+  heartId: number;
+}

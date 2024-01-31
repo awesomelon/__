@@ -16,6 +16,9 @@ export class HistoryDTO {
   @ApiProperty({ required: true, description: 'History Type' })
   type: string;
 
+  @ApiProperty({ required: true, description: 'History Description' })
+  isUse: boolean;
+
   @ApiProperty({ required: false, description: 'Expired Start' })
   expiredStartAt?: Date;
 

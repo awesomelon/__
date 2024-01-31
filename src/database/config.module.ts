@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Entity
 import { BonusHeart } from 'src/bonusHeart/entity';
-import { Heart } from 'src/heart/entity';
+import { Heart, HeartItem } from 'src/heart/entity';
 import { History } from 'src/history/entity';
 import { HelloBotUser } from 'src/user/entity';
 
@@ -21,7 +21,7 @@ import { HelloBotUser } from 'src/user/entity';
           username: config.get('DB_USERNAME'),
           password: config.get('DB_PASSWORD'),
           database: config.get('DB_NAME'),
-          entities: [HelloBotUser, Heart, BonusHeart, History],
+          entities: [HelloBotUser, Heart, BonusHeart, History, HeartItem],
           synchronize: true,
           autoLoadEntities: true,
         };

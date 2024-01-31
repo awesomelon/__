@@ -5,13 +5,13 @@ import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 // History
 import { HistoryService } from './history.service';
 import { History } from './entity';
+import { HistoryController } from './history.controller';
 
 // common
 import { CommonService } from 'src/common/service/common.service';
 
 // lib
 import { DataSource, Repository } from 'typeorm';
-import { HistoryController } from './history.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([History])],

@@ -8,7 +8,7 @@ import {
   Repository,
 } from 'typeorm';
 import { PickKeysByType } from 'typeorm/common/PickKeysByType';
-import { errorException } from '../middleware';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 @Injectable()
 export class CommonService<T> {
@@ -27,6 +27,14 @@ export class CommonService<T> {
 
   async count(filter: FindOptionsWhere<T>): Promise<number> {
     return this.genericRepository.count(filter);
+  }
+
+  async updateOne(
+    filter: FindOptionsWhere<T>,
+    data: QueryDeepPartialEntity<T>,
+  ) {
+    await this.genericRepository.update(filter, data);
+    return this.genericRepository.findOne({ where: filter });
   }
 
   async sum(
@@ -49,9 +57,7 @@ export class CommonService<T> {
 
   async insert(data: T) {
     const queryRunner = this.dataSource.createQueryRunner();
-
     await queryRunner.connect();
-
     await queryRunner.startTransaction();
 
     try {

@@ -10,3 +10,17 @@ export class ResponseCommon {
   @ApiProperty()
   updatedAt: Date;
 }
+
+export class ResponseError {
+  @ApiProperty()
+  statusCode: string;
+
+  @ApiProperty()
+  message: string;
+
+  @ApiProperty()
+  timestamp: Date;
+
+  @ApiProperty()
+  path: string;
+}

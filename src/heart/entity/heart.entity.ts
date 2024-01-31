@@ -1,13 +1,11 @@
 import { CommonEntity } from 'src/common/entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
+import { HeartItem } from './heartItem.entity';
 
 @Entity()
 export class Heart extends CommonEntity {
-  @Column({ type: 'int', default: 0, nullable: false })
-  amount: number;
-
-  @Column({ type: 'boolean', nullable: false })
-  isUse: boolean;
+  @Column({ type: 'int', nullable: false, default: 0 })
+  totalAmount: number;
 
   @Column({ type: 'int', nullable: false })
   userId: number;

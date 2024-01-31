@@ -32,26 +32,23 @@ export class AuthService {
 
   async getProfile(req) {
     const email = req.user.email;
-
     const user = await this.userService.findOne({
       where: { email, isDeleted: false },
       select: ['email', 'role', 'id'],
     });
 
-    const heart = await this.heartService.sum({
-      userId: user.id,
-    });
-
-    const bonus = await this.bonusService.sum({
-      userId: user.id,
-      expiredStartAt: MoreThanOrEqual(new Date()),
-      expiredEndAt: MoreThanOrEqual(new Date()),
-    });
+    const heart = await this.getAmountHeart(user.id);
 
     return {
       ...user,
-      heart: heart + bonus,
+      heart,
     };
+  }
+
+  async getAmountHeart(userId: number) {
+    const heart = await this.heartService.getHeartAmount(userId);
+    const bonus = await this.bonusService.getHeartAmount(userId);
+    return heart + bonus;
   }
 
   async validateUser(
@@ -80,6 +77,7 @@ export class AuthService {
     const user = await this.userService.findOne({
       where: { email, isDeleted: false },
     });
+
     const token = await this.checkJwtToken({
       email,
       role: user.role,

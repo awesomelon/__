@@ -6,6 +6,7 @@ import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { HeartService } from './heart.service';
 import { HeartController } from './heart.controller';
 import { Heart } from './entity';
+import { HeartItemModule } from './heartItemModule';
 
 // BonusHeart
 import { BonusHeartModule } from 'src/bonusHeart/bonusHeart.module';
@@ -20,7 +21,12 @@ import { CommonService } from 'src/common/service/common.service';
 import { DataSource, Repository } from 'typeorm';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Heart]), HistoryModule, BonusHeartModule],
+  imports: [
+    TypeOrmModule.forFeature([Heart]),
+    HistoryModule,
+    BonusHeartModule,
+    HeartItemModule,
+  ],
   controllers: [HeartController],
   providers: [
     HeartService,
