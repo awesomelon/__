@@ -1,9 +1,6 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
 
 export class HeartDTO {
-  @ApiProperty({ required: true, description: '일반 하트 총량' })
-  totalAmount: number;
-
   @ApiProperty({ required: true, description: '유저 ID' })
   userId: number;
 }

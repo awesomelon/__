@@ -22,7 +22,7 @@ import { CommonService } from 'src/common/service/common.service';
 import { errorException } from 'src/common/middleware';
 
 // lib
-import { MoreThanOrEqual } from 'typeorm';
+import { LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import * as dayjs from 'dayjs';
 
 import { HistoryDTO } from 'src/history/dto';
@@ -60,10 +60,11 @@ export class BonusHeartService {
     const expiredStartAt = dayjs(dto.expiredStartAt);
     const expiredEndAt = dayjs(dto.expiredEndAt);
 
-    const startDiff = current.diff(expiredStartAt);
     const endDiff = current.diff(expiredEndAt);
 
-    if (startDiff > 0) {
+    const diff = expiredEndAt.diff(expiredStartAt);
+
+    if (diff < 0) {
       errorException('TF442');
     }
 
@@ -123,18 +124,6 @@ export class BonusHeartService {
     });
   }
 
-  private getValidBonusHearts(userId: number) {
-    return this.commonService.find({
-      where: {
-        userId,
-        isDeleted: false,
-        expiredStartAt: MoreThanOrEqual(new Date()),
-        expiredEndAt: MoreThanOrEqual(new Date()),
-      },
-      order: { expiredEndAt: 'ASC' },
-    });
-  }
-
   private async applyBonusHeartUsage(
     bonusHearts: BonusHeart[],
     amount: number,
@@ -143,36 +132,51 @@ export class BonusHeartService {
     while (amount > 0) {
       const bonusHeart = bonusHearts[cursor];
       const bonusHeartId = bonusHeart.id;
-      const bonusHeartAmount = bonusHeart.totalAmount;
+      const bonusHeartAmount = bonusHeart.bonusHeartItems.reduce((acc, cur) => {
+        return acc + cur.amount;
+      }, 0);
 
       const useAmount =
         bonusHeartAmount - amount >= 0 ? amount : bonusHeartAmount;
-      await this.bonusHeartItemService.insert({
-        bonusHeartId,
-        amount: -useAmount,
-      });
 
-      const totalAmount = await this.bonusHeartItemService.sum({
-        bonusHeartId,
-        isDeleted: false,
-      });
-
-      await this.commonService.updateOne({ id: bonusHeartId }, { totalAmount });
+      if (useAmount > 0) {
+        await this.bonusHeartItemService.insert({
+          bonusHeartId,
+          amount: -useAmount,
+        });
+      }
 
       amount = amount - useAmount;
       cursor++;
     }
   }
 
-  async getTotalBonusHeartAmount(userId: number) {
-    const totalAmount = await this.commonService.sum(
-      {
+  private getValidBonusHearts(userId: number) {
+    const current = new Date();
+
+    return this.commonService.find({
+      where: {
         userId,
-        expiredStartAt: MoreThanOrEqual(new Date()),
-        expiredEndAt: MoreThanOrEqual(new Date()),
+        isDeleted: false,
+        expiredStartAt: LessThanOrEqual(current),
+        expiredEndAt: MoreThanOrEqual(current),
       },
-      'totalAmount',
-    );
+      order: { expiredEndAt: 'ASC' },
+      relations: ['bonusHeartItems'],
+    });
+  }
+
+  async getTotalBonusHeartAmount(userId: number) {
+    const bonusHearts = await this.getValidBonusHearts(userId);
+
+    const totalAmount = bonusHearts.reduce((acc, cur) => {
+      return (
+        acc +
+        cur.bonusHeartItems.reduce((acc, cur) => {
+          return acc + cur.amount;
+        }, 0)
+      );
+    }, 0);
 
     return totalAmount;
   }

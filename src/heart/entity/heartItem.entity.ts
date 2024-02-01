@@ -1,5 +1,6 @@
 import { CommonEntity } from 'src/common/entity';
-import { Column, Entity, Index, OneToMany } from 'typeorm';
+import { Column, Entity, Index, ManyToOne } from 'typeorm';
+import { Heart } from './heart.entity';
 
 @Entity()
 export class HeartItem extends CommonEntity {
@@ -9,4 +10,7 @@ export class HeartItem extends CommonEntity {
   @Index()
   @Column({ type: 'int', nullable: false })
   heartId: number;
+
+  @ManyToOne(() => Heart, (heart) => heart.heartItems)
+  heart: Heart;
 }

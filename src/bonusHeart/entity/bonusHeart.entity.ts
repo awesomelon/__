@@ -1,11 +1,9 @@
 import { CommonEntity } from 'src/common/entity';
-import { Column, Entity, Index } from 'typeorm';
+import { Column, Entity, Index, OneToMany } from 'typeorm';
+import { BonusHeartItem } from './bonusHeartItem.entity';
 
 @Entity()
 export class BonusHeart extends CommonEntity {
-  @Column({ type: 'int', default: 0, nullable: false })
-  totalAmount: number;
-
   @Index()
   @Column({ type: 'int', nullable: false })
   userId: number;
@@ -21,4 +19,10 @@ export class BonusHeart extends CommonEntity {
   @Index()
   @Column({ type: 'timestamptz', nullable: false })
   expiredEndAt: Date;
+
+  @OneToMany(
+    () => BonusHeartItem,
+    (bonusHeartItem) => bonusHeartItem.bonusHeart,
+  )
+  bonusHeartItems: BonusHeartItem[];
 }

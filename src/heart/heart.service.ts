@@ -59,10 +59,6 @@ export class HeartService {
       heartId: heart.id,
       amount: dto.amount,
     });
-    const totalAmount = await this.heartItemService.sum({
-      heartId: heart.id,
-      isDeleted: false,
-    });
     await this.logHistory({
       ...dto,
       userId: heart.userId,
@@ -70,17 +66,14 @@ export class HeartService {
       type: 'heart',
     });
 
-    return this.commonService.updateOne({ id: heart.id }, { totalAmount });
+    return this.commonService.findOne({ where: { id: heart.id } });
   }
 
   private async createHeart(
     userId: number,
     dto: RequestChargingHeartDTO,
   ): Promise<Heart> {
-    const newHeart = await this.insert({
-      userId,
-      totalAmount: dto.amount,
-    });
+    const newHeart = await this.insert({ userId });
     await this.heartItemService.insert({
       heartId: newHeart.id,
       amount: dto.amount,
@@ -167,11 +160,6 @@ export class HeartService {
         heartId: heart.id,
         amount: -amount,
       });
-      const totalAmount = await this.heartItemService.sum({
-        heartId: heart.id,
-        isDeleted: false,
-      });
-      await this.commonService.updateOne({ id: heart.id }, { totalAmount });
       await this.logHistory({
         ...dto,
         isUse: true,
@@ -193,12 +181,20 @@ export class HeartService {
   }
 
   async getHeartAmount(userId: number) {
-    const heart = await this.commonService.findOne({ where: { userId } });
+    const heart = await this.commonService.findOne({
+      where: { userId },
+      relations: ['heartItems'],
+    });
+
     if (!heart) {
       return 0;
     }
 
-    return heart.totalAmount;
+    const totalAmount = heart.heartItems.reduce((acc, cur) => {
+      return acc + cur.amount;
+    }, 0);
+
+    return totalAmount;
   }
 
   async insert(dto: HeartDTO) {

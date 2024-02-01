@@ -1,5 +1,6 @@
 import { CommonEntity } from 'src/common/entity';
-import { Column, Entity, Index, OneToMany } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm';
+import { BonusHeart } from './bonusHeart.entity';
 
 @Entity()
 export class BonusHeartItem extends CommonEntity {
@@ -9,4 +10,7 @@ export class BonusHeartItem extends CommonEntity {
   @Index()
   @Column({ type: 'int', nullable: false })
   bonusHeartId: number;
+
+  @ManyToOne(() => BonusHeart, (heart) => heart.bonusHeartItems)
+  bonusHeart: BonusHeart;
 }
