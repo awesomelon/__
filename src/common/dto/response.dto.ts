@@ -1,13 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ResponseCommon {
-  @ApiProperty()
-  id: number;
-
-  @ApiProperty()
+  @ApiProperty({ description: '생성일' })
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ description: '수정일' })
   updatedAt: Date;
 }
 

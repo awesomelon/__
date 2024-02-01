@@ -25,9 +25,18 @@ import { BonusHeartModule } from './bonusHeart/bonusHeart.module';
 // History
 import { HistoryModule } from './history/history.module';
 
+// lib
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { HealthModule } from './health/health.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, cache: true }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'docs'),
+      exclude: ['/api/(.*)'],
+    }),
     DBConfigModule,
     TerminusModule,
     AuthModule,
@@ -35,8 +44,9 @@ import { HistoryModule } from './history/history.module';
     HeartModule,
     BonusHeartModule,
     HistoryModule,
+    HealthModule,
   ],
-  controllers: [HealthController],
+  controllers: [],
   providers: [
     {
       provide: APP_FILTER,

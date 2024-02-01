@@ -24,6 +24,7 @@ import { errorException } from 'src/common/middleware';
 // lib
 import { MoreThanOrEqual } from 'typeorm';
 import * as dayjs from 'dayjs';
+import { HistoryDTO } from 'src/history/dto';
 
 @Injectable()
 export class BonusHeartService {
@@ -43,6 +44,7 @@ export class BonusHeartService {
     await this.logHistory({
       ...dto,
       adminId,
+      isUse: false,
       type: 'bonusHeart',
     });
 
@@ -109,6 +111,11 @@ export class BonusHeartService {
     const userId = dto.userId;
     const bonusHearts = await this.getValidBonusHearts(userId);
     await this.applyBonusHeartUsage(bonusHearts, dto.amount);
+    await this.logHistory({
+      ...dto,
+      isUse: true,
+      type: 'bonusHeart',
+    });
     return this.commonService.findOne({
       where: { userId, isDeleted: false },
     });
@@ -174,7 +181,7 @@ export class BonusHeartService {
     return this.commonService.insert(entity);
   }
 
-  private async logHistory(data: any): Promise<void> {
+  private async logHistory(data: HistoryDTO): Promise<void> {
     await this.historyService.insert(data);
   }
 }

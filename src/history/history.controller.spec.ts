@@ -28,7 +28,6 @@ describe('History Controller', () => {
                   type: 'heart',
                   expiredStartAt: null,
                   expiredEndAt: null,
-                  isUse: false,
                 },
               ],
             }),
@@ -63,7 +62,6 @@ describe('History Controller', () => {
           type: 'heart',
           expiredStartAt: null,
           expiredEndAt: null,
-          isUse: false,
         },
       ],
     });

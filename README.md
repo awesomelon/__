@@ -20,7 +20,15 @@
 
 <br >
 
-## 2. 실행
+## 2. 구조
+
+- src
+  - auth: 로그인, 유저 정보 조회
+  - heart: 일반 하트 충전, 사용
+  - bonusHeart: 보너스 하트 충전, 사용
+  - history: 하트 충전 내역 조회
+
+## 3. 실행
 
 ```bash
 $ docker compose up -d
@@ -28,13 +36,14 @@ $ docker compose up -d
 
 <br >
 
-## 3. API 명세
+## 4. API 명세
 
-실행 후 http://localhost:9876/docs 에서 확인 가능
+- http://localhost:9876/docs
+- http://localhost:9876/swagger
 
 <br >
 
-## 4. 에러 코드
+## 5. 에러 코드
 
 - TF001: 잘못된 이메일 형식입니다.
 - TF002: 잘못된 비밀번호 형식입니다.
@@ -53,7 +62,7 @@ $ docker compose up -d
 - TF554: 잘못된 요청입니다.
 - TF555: 서버 오류입니다. 관리자에게 문의주세요
 
-## 5. Task List
+## 6. Task List
 
 - [x] 프로젝트 환경 세팅
 - [x] 실행 시 운영 계정, 일반 계정 생성

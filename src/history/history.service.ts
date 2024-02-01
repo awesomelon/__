@@ -30,6 +30,7 @@ export class HistoryService {
       where: {
         userId,
         isUse: false,
+        isDeleted: false,
       },
       skip: filter.skip,
       take: filter.limit,
@@ -38,9 +39,10 @@ export class HistoryService {
   }
 
   async getTotalCount(userId: number) {
-    return this.count({
+    return this.countBy({
       userId,
       isUse: false,
+      isDeleted: false,
     });
   }
 
@@ -48,8 +50,8 @@ export class HistoryService {
     return this.commonService.find(filter);
   }
 
-  async count(filter: FindOptionsWhere<History>) {
-    return this.commonService.count(filter);
+  async countBy(filter: FindOptionsWhere<History>) {
+    return this.commonService.countBy(filter);
   }
 
   async insert(dto: HistoryDTO) {

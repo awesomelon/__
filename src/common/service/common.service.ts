@@ -25,8 +25,8 @@ export class CommonService<T> {
     return this.genericRepository.findOne(filter);
   }
 
-  async count(filter: FindOptionsWhere<T>): Promise<number> {
-    return this.genericRepository.count(filter);
+  async countBy(filter: FindOptionsWhere<T>): Promise<number> {
+    return this.genericRepository.countBy(filter);
   }
 
   async updateOne(

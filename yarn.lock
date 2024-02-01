@@ -491,10 +491,10 @@
     http-errors "2.0.0"
     mime "^3.0.0"
 
-"@fastify/static@^6.11.2":
-  version "6.11.2"
-  resolved "https://registry.yarnpkg.com/@fastify/static/-/static-6.11.2.tgz#1fe40c40daf055a28d29db807b459fcff431d9b6"
-  integrity sha512-EH7mh7q4MfNdT7N07ZVlwsX/ObngMvQ7KBP0FXAuPov99Fjn80KSJMdxQhhYKAKWW1jXiFdrk8X7d6uGWdZFxg==
+"@fastify/static@^6.12.0":
+  version "6.12.0"
+  resolved "https://registry.yarnpkg.com/@fastify/static/-/static-6.12.0.tgz#f3d55dda201c072bae0593e5d45dde8fd235c288"
+  integrity sha512-KK1B84E6QD/FcQWxDI2aiUCwHxMJBI1KeCUzm1BwYpPY1b742+jeKruGHP2uOluuM6OkBPI8CIANrXcCRtC2oQ==
   dependencies:
     "@fastify/accept-negotiator" "^1.0.0"
     "@fastify/send" "^2.0.0"
@@ -891,6 +891,13 @@
     comment-json "4.2.3"
     jsonc-parser "3.2.0"
     pluralize "8.0.0"
+
+"@nestjs/serve-static@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/serve-static/-/serve-static-4.0.0.tgz#3baeea982f66d64718a59f3d8f67281b74d4dbdd"
+  integrity sha512-8cTrNV2ngdHIjiLNsXePnw0+KY1ThrZGz/WeyAG5gIvmZNDbnZBOrPoYlKL+MOzlXlQStxR5jKLYmn+nJeoncQ==
+  dependencies:
+    path-to-regexp "0.2.5"
 
 "@nestjs/swagger@^7.1.11":
   version "7.1.11"
@@ -4973,13 +4980,6 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-nest-winston@^1.9.4:
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/nest-winston/-/nest-winston-1.9.4.tgz#1cc53a2087818bc89663cbaa0bf65061d6b81c6f"
-  integrity sha512-ilEmHuuYSAI6aMNR120fLBl42EdY13QI9WRggHdEizt9M7qZlmXJwpbemVWKW/tqRmULjSx/otKNQ3GMQbfoUQ==
-  dependencies:
-    fast-safe-stringify "^2.1.1"
-
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
@@ -5334,6 +5334,11 @@ path-scurry@^1.10.1, path-scurry@^1.6.1:
   dependencies:
     lru-cache "^9.1.1 || ^10.0.0"
     minipass "^5.0.0 || ^6.0.2 || ^7.0.0"
+
+path-to-regexp@0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-0.2.5.tgz#0b426991e387fc4c675de23557f358715eb66fb0"
+  integrity sha512-l6qtdDPIkmAmzEO6egquYDfqQGPMRNGjYtrU13HAXb3YSRrt7HSb1sJY0pKp6o2bAa86tSB6iwaW2JbthPKr7Q==
 
 path-to-regexp@3.2.0:
   version "3.2.0"

@@ -18,7 +18,6 @@ import { errorException } from 'src/common/middleware';
 
 // lib
 import * as bcrypt from 'bcrypt';
-import { MoreThanOrEqual } from 'typeorm';
 
 @Injectable()
 export class AuthService {

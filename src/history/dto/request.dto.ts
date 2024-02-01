@@ -4,7 +4,7 @@ import { FindManyOptions } from 'typeorm';
 import { History } from '../entity';
 
 export class HistoryDTO {
-  @ApiProperty({ required: true, description: 'Heart Bonus Amount' })
+  @ApiProperty({ required: true, description: '하트 사용량' })
   amount: number;
 
   @ApiProperty({ required: true, description: 'User ID' })

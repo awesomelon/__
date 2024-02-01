@@ -15,6 +15,7 @@ import { errorException } from 'src/common/middleware';
 
 // history
 import { HistoryService } from 'src/history/history.service';
+import { HistoryDTO } from 'src/history/dto';
 
 @Injectable()
 export class HeartService {
@@ -62,7 +63,12 @@ export class HeartService {
       heartId: heart.id,
       isDeleted: false,
     });
-    await this.logHistory({ ...dto, heartId: heart.id, type: 'heart' });
+    await this.logHistory({
+      ...dto,
+      userId: heart.userId,
+      isUse: false,
+      type: 'heart',
+    });
 
     return this.commonService.updateOne({ id: heart.id }, { totalAmount });
   }
@@ -74,13 +80,17 @@ export class HeartService {
     const newHeart = await this.insert({
       userId,
       totalAmount: dto.amount,
-      isUse: false,
     });
     await this.heartItemService.insert({
       heartId: newHeart.id,
       amount: dto.amount,
     });
-    await this.logHistory({ ...dto, heartId: newHeart.id, type: 'heart' });
+    await this.logHistory({
+      ...dto,
+      isUse: false,
+      userId,
+      type: 'heart',
+    });
     return this.commonService.findOne({ where: { id: newHeart.id } });
   }
 
@@ -98,7 +108,7 @@ export class HeartService {
       await this.processHeartUsage(useHeart, dto, userId);
     }
 
-    return this.getHeartAmount(userId);
+    return this.getTotalHeartAmount(userId);
   }
 
   private async validateUseAmount(amount: number, userId: number) {
@@ -110,7 +120,7 @@ export class HeartService {
       errorException('TF446');
     }
 
-    const totalAmount = await this.getTotalHeartAmount(userId);
+    const { totalAmount } = await this.getTotalHeartAmount(userId);
     if (totalAmount < amount) {
       errorException('TF444');
     }
@@ -136,7 +146,13 @@ export class HeartService {
   ): Promise<void> {
     if (amount > 0) {
       await this.bonusHeartService.use({ ...dto, amount, userId });
-      await this.logHistory({ ...dto, amount, type: 'bonusHeart', userId });
+      await this.logHistory({
+        ...dto,
+        isUse: true,
+        amount,
+        type: 'bonusHeart',
+        userId,
+      });
     }
   }
 
@@ -156,7 +172,13 @@ export class HeartService {
         isDeleted: false,
       });
       await this.commonService.updateOne({ id: heart.id }, { totalAmount });
-      await this.logHistory({ ...dto, amount, type: 'heart', userId });
+      await this.logHistory({
+        ...dto,
+        isUse: true,
+        amount,
+        type: 'heart',
+        userId,
+      });
     }
   }
 
@@ -165,7 +187,9 @@ export class HeartService {
     const bonusHeartAmount =
       await this.bonusHeartService.getTotalBonusHeartAmount(userId);
 
-    return heartAmount + bonusHeartAmount;
+    return {
+      totalAmount: heartAmount + bonusHeartAmount,
+    };
   }
 
   async getHeartAmount(userId: number) {
@@ -184,7 +208,7 @@ export class HeartService {
     return this.commonService.insert(entity);
   }
 
-  private async logHistory(data: any): Promise<void> {
+  private async logHistory(data: HistoryDTO): Promise<void> {
     await this.historyService.insert(data);
   }
 }

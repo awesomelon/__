@@ -38,7 +38,7 @@ export class HistoryController {
   @Version('1')
   @Get('')
   @ApiBearerAuth()
-  @Roles([RolesType.ADMIN, RolesType.USER])
+  @Roles([RolesType.USER])
   @ApiOperation({ summary: '하트 충전 내역 조회' })
   @ApiQuery({ type: RequestHistoryDTO })
   @ApiCreatedResponse({ type: ResponseHistory })

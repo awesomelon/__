@@ -11,7 +11,7 @@ import {
 } from '@nestjs/terminus';
 
 @ApiTags('health')
-@Controller('')
+@Controller('/health')
 export class HealthController {
   constructor(
     private health: HealthCheckService,

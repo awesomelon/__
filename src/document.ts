@@ -27,7 +27,7 @@ export class APIDocumentation {
     const documentOptions = this.initializeOptions();
     const document = SwaggerModule.createDocument(app, documentOptions);
 
-    SwaggerModule.setup('docs', app, document, {
+    SwaggerModule.setup('swagger', app, document, {
       swaggerOptions: { defaultModelsExpandDepth: -1 },
     });
   }
