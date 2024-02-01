@@ -24,6 +24,7 @@ import { errorException } from 'src/common/middleware';
 // lib
 import { MoreThanOrEqual } from 'typeorm';
 import * as dayjs from 'dayjs';
+
 import { HistoryDTO } from 'src/history/dto';
 
 @Injectable()
@@ -55,6 +56,7 @@ export class BonusHeartService {
     const chargingAmount = dto.amount;
 
     const current = dayjs();
+
     const expiredStartAt = dayjs(dto.expiredStartAt);
     const expiredEndAt = dayjs(dto.expiredEndAt);
 
@@ -129,7 +131,7 @@ export class BonusHeartService {
         expiredStartAt: MoreThanOrEqual(new Date()),
         expiredEndAt: MoreThanOrEqual(new Date()),
       },
-      order: { createdAt: 'ASC' },
+      order: { expiredEndAt: 'ASC' },
     });
   }
 

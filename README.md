@@ -24,9 +24,16 @@
 
 - src
   - auth: 로그인, 유저 정보 조회
+  - user: 유저 정보 조회
   - heart: 일반 하트 충전, 사용
   - bonusHeart: 보너스 하트 충전, 사용
   - history: 하트 충전 내역 조회
+  - common: 공통 모듈
+  - database: 데이터베이스 모듈
+
+### 2-1. ERD
+
+![ERD](./assets/cover.png)
 
 ## 3. 실행
 
@@ -62,7 +69,7 @@ $ docker compose up -d
 - TF554: 잘못된 요청입니다.
 - TF555: 서버 오류입니다. 관리자에게 문의주세요
 
-## 6. Task List
+## 6. Todo List
 
 - [x] 프로젝트 환경 세팅
 - [x] 실행 시 운영 계정, 일반 계정 생성
@@ -74,3 +81,4 @@ $ docker compose up -d
 - [x] 유저 하트 사용 API
 - [x] 유저 하트 충전 내역 조회 API
 - [x] 테스트 케이스 작성
+- [ ] 로그
