@@ -36,7 +36,7 @@ export class BonusHeartController {
   @Post('/bonus/charging')
   @ApiBearerAuth()
   @Roles([RolesType.ADMIN])
-  @ApiOperation({ summary: '보너스 하트 충전' })
+  @ApiOperation({ summary: '보너스 하트 충전 (관리자 권한)' })
   @ApiBody({ type: RequestChargingBonusHeartDTO })
   @ApiCreatedResponse({ type: ResponseHeartDTO })
   async charging(@Body() body: RequestChargingBonusHeartDTO, @Request() req) {

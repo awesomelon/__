@@ -41,7 +41,7 @@ export class HeartController {
   @Post('/normal/charging')
   @ApiBearerAuth()
   @Roles([RolesType.USER])
-  @ApiOperation({ summary: '일반 하트 충전' })
+  @ApiOperation({ summary: '일반 하트 충전 (일반 유저 권한)' })
   @ApiBody({ type: RequestChargingHeartDTO })
   @ApiCreatedResponse({ type: ResponseHeartDTO })
   async charging(@Body() body: RequestChargingHeartDTO, @Request() req) {
@@ -52,7 +52,7 @@ export class HeartController {
   @Post('/use')
   @ApiBearerAuth()
   @Roles([RolesType.USER])
-  @ApiOperation({ summary: '하트 사용' })
+  @ApiOperation({ summary: '하트 사용 (일반 유저 권한)' })
   @ApiBody({ type: RequestUseHeartDTO })
   @ApiCreatedResponse({ type: ResponseHeartDTO })
   async use(@Body() body: RequestUseHeartDTO, @Request() req) {

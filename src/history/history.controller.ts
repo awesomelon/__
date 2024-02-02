@@ -39,7 +39,7 @@ export class HistoryController {
   @Get('')
   @ApiBearerAuth()
   @Roles([RolesType.USER])
-  @ApiOperation({ summary: '하트 충전 내역 조회' })
+  @ApiOperation({ summary: '하트 충전 내역 조회 (일반 유저 권한)' })
   @ApiQuery({ type: RequestHistoryDTO })
   @ApiCreatedResponse({ type: ResponseHistory })
   async list(@Query('skip') skip, @Query('limit') limit, @Request() req) {

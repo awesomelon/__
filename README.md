@@ -45,8 +45,8 @@ $ docker compose up -d
 
 ## 4. API 명세
 
-- http://localhost:9876/docs
-- http://localhost:9876/swagger
+- http://localhost:9876/docs (Document)
+- http://localhost:9876/swagger (Swagger)
 
 <br >
 
